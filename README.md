@@ -2,15 +2,9 @@
 Ansible provisioning for container networking solutions using OpenContrail
 
 This repository contains provisioning instructions to install OpenContrail
-as a network overlay for container based cluster management solutions.
+as a network overlay for container based cluster management solutions. 
 
-The test directory defines a jenkins workflow that creates and
-installs a test cluster and executes an application within the
-cluster.
-
-For support/questions:
- - Join the slack team at `slack.opencontrail.org`
- - Developers mailing list: dev@lists.opencontrail.org
+Forked from https://github.com/Juniper/container-networking-ansible which was built for testing, this repo is my copy for setting a small cloud lab and demo environment. I have made the changes necessary to install OpenShift Origin with OpenContrail on EC2 and removed the Jenkins testing. As time allows I will update this readme with instructions to deploy this for yourself.
 
 The opencontrail playbook consists of the following:
   - filter_plugins/ip_filters.py
