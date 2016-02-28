@@ -65,24 +65,24 @@ There are several differences in design from a plain-vanilla kubernetes cluster 
 
 #### Deployment Steps
 
-- I recommend creating a t2.micro node running Linux CentOS 7 on AWS as your "starting-point" node. This way you'll be subscribed to CentOS 7 and find out your region, EC2 image ID which you'll need anyway below. Download and copy your AWS keys to this node's ~/.ssh/ directory and install the AWS CLI. Fill in the <_blanks_>... 
+- I recommend creating a t2.micro node running Linux CentOS 7 on AWS as your "starting-point" node. This way you'll be subscribed to CentOS 7 and find out your region, EC2 image ID which you'll need anyway below. Search the AWS Marketplace for "CentOS 7 (x86_64) with Updates HVM" to find the image. Download and copy your AWS keys to this node's ~/.ssh/ directory and install the AWS CLI. Fill in the <_blanks_>... 
 
 ```
 sudo yum install -y wget
 wget <_keys URL for your key.pem_>
 mv <_keys file_> .ssh/<_key_>.pem
+chmod 400 .ssh/<_key_>.pem
 eval $(ssh-agent)
 ssh-add .ssh/<_key_>.pem
-export AWS_ACCESS_KEY_ID=<_get this from AWS IAM_>
-export AWS_SECRET_ACCESS_KEY=<_get this from AWS IAM_>
 curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
-sudo yum install unzip
+sudo yum install -y unzip
 unzip awscli-bundle.zip
 sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
-```
 
-- Try the AWS cli to check it works. There's all kinds of useful commands you'll find in its help.
 ```
+- Configure the AWS CLI ('aws configure') with your AWS IAM access key, secret (get these from the AWS console) and region (get this from the AWS console as well - e.g. us-west-2). You can leave the output format set to none or text, whatever you prefer. I think the default JSON is more readable for a lot of commands. After you configure it, try it to check it works. There's all kinds of useful commands you'll find in its help.
+```
+aws configure
 aws ec2 describe-instances
  ```
  
@@ -91,18 +91,16 @@ aws ec2 describe-instances
 ```
 wget http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 sudo rpm -ivh epel-release-latest-7.noarch.rpm
-sudo yum install -y ansible python-boto pyOpenSSL
+sudo yum install -y ansible python-boto pyOpenSSL git
 ansible --version
 ```
-
+- You can remove everything in you just created in your home directory now if you like.
 - Now git clone this repo into a new src directory
 
 ```
-mkdir ~/src
-cd ~/src
 git clone https://github.com/jameskellynet/container-networking-ansible.git
 ```
-
+- This should create the container-networking-ansible directory
 - Edit the file container-networking-ansible/test/ec2-origin/group_vars/all.yml which now contains
 
 ```
