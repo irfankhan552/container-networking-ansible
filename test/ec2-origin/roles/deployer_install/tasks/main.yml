@@ -16,9 +16,13 @@
     - util-linux
     - libffi-devel
     - python-cryptography
+    - squid
 
 - name: Requires ansible
   pip: name=ansible state=present version=1.9.4
 
 - name: Requires git
   yum: name=git state=present
+
+- name: Start squid
+  service: name=squid state=started enabled=yes

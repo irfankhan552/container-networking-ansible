@@ -20,7 +20,10 @@ deployment_type=origin
 
 openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/openshift/htpasswd'}]
 
-cli_docker_additional_registries=registry.{{ aws_region }}.dev.opencontrail.org:5000
+#
+# comment out compared to Juniper repo because weren't not using this for poc/demo'ing
+#
+#cli_docker_additional_registries=registry.{{ aws_region }}.ec2.internal:5000
 
 use_openshift_sdn = false
 sdn_network_plugin_name = opencontrail
@@ -35,7 +38,7 @@ gateways
 [opencontrail:vars]
 opencontrail_public_subnet={{ cluster_public_subnet }}
 opencontrail_private_subnet=10.32.0.0/16
-opencontrail_http_proxy=http://web-proxy.{{ aws_region }}.dev.opencontrail.org:3128
+opencontrail_http_proxy=http://web-proxy.{{ aws_region }}.ec2.internal:3128
 opencontrail_kube_release=origin-1.1
 opencontrail_dns_forwarder={{ origin_deployer.tagged_instances[0].private_ip }}
 opencontail_gateway_extra_infra_prefixes={{ ec2_private_subnet.cidr_block }}

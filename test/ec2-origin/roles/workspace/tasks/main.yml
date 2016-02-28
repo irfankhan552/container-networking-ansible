@@ -27,8 +27,11 @@
     - opencontrail.yml
     - opencontrail_provision.yml
 
-- name: Copy registry certificate
-  copy: src=registry.crt dest="{{ path_src }}/openshift-ansible/playbooks/byo"
+#
+# commenting out copy play used in original Juniper repo because we don't have this file for the demo
+#
+#- name: Copy registry certificate
+#  copy: src=registry.crt dest="{{ path_src }}/openshift-ansible/playbooks/byo"
 
 - name: Copy files
   copy: src="{{ item }}" dest="{{ path_src }}/openshift-ansible/playbooks/byo"

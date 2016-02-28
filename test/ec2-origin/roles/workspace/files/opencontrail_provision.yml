@@ -30,7 +30,7 @@
       lineinfile:
         dest: /etc/sysconfig/origin-master
         regexp: '^(#|)NO_PROXY='
-        line: "NO_PROXY=localhost,127.0.0.1,::1,{{ ansible_default_ipv4.address }},{{ ansible_hostname }},.dev.opencontrail.org,.compute.internal,.cluster.local,kubernetes.default.svc"
+        line: "NO_PROXY=localhost,127.0.0.1,::1,{{ ansible_default_ipv4.address }},{{ ansible_hostname }},.ec2.internal,.compute.internal,.cluster.local,kubernetes.default.svc"
       notify:
         - restart openshift-master
 
@@ -38,7 +38,7 @@
       lineinfile:
         dest: /etc/sysconfig/origin-master
         regexp: '^(#|)HTTP_PROXY='
-        line: "HTTP_PROXY=http://web-proxy.VAR_AWS_REGION.dev.opencontrail.org:3128"
+        line: "HTTP_PROXY=http://web-proxy.VAR_AWS_REGION.ec2.internal:3128"
       notify:
         - restart openshift-master
 
@@ -46,7 +46,7 @@
       lineinfile:
         dest: /etc/sysconfig/origin-master
         regexp: '^(#|)HTTPS_PROXY='
-        line: "HTTPS_PROXY=http://web-proxy.VAR_AWS_REGION.dev.opencontrail.org:3128"
+        line: "HTTPS_PROXY=http://web-proxy.VAR_AWS_REGION.ec2.internal:3128"
       notify:
         - restart openshift-master
 
