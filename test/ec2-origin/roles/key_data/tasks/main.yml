@@ -1,3 +1,0 @@
----
-- name: fetch registry certificate
-  fetch: src=/var/lib/docker-registry/cert.crt dest=registry.crt fail_on_missing=yes flat=yes
