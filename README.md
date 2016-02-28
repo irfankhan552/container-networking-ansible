@@ -110,18 +110,16 @@ aws_region: us-west-2
 ec2_image: ami-d440a6e7
 ssh_user: centos
 aws_vpc_name: openshift-demo-vpc
-aws_public_network: public
-aws_private_network: private
 aws_keys: jamesk-keys
 ```
 
-- In your edits, setup your AWS region (in case it's different), AWS VPC name, and the name of the AWS keys file (without the .pem extension ). I recommend creating your 2 AWS networks and calling them public and private, but if not, change the variables here too. If you are using a different AWS region than us-west-2, the EC2 image variable here might change. Use the appropriate image ID for a CentOS 7 machine with kernel version matching 3.10:
+- In your edits, setup your AWS region (in case it's different), desired AWS VPC name (will get created the first time we create the cluster), and the name of the AWS keys file (without the .pem extension ).  If you are using a different AWS region than us-west-2, the EC2 image variable here might change. Use the appropriate image ID for a CentOS 7 machine with kernel version matching 3.10:
 ```
 $ uname -r
 3.10.0-229.14.1.el7.x86_64
 ```
 
-- Finally let's kick off our Ansible playbook and get going. This sets up the VMs we will need. A deployer and gateway node in the public subnet, and a master, node1 and node2 in the private subnet.
+- Finally let's kick off our Ansible playbook and get going. This sets up the VMs we will need in a cluster. A deployer and gateway node in a "public" subnet, and a master, node1 and node2 in the "private" subnet.
 ```
 cd container-networking-ansible/test/ec2-origin/
 ansible-playbook -i localhost playbook.yml --tags=cluster

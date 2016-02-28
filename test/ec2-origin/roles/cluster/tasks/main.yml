@@ -18,11 +18,13 @@
         routes:
           - dest: 0.0.0.0/0
             gw: igw
+        resource_tags: { "Name":"rtb-public" }
       - subnets:
           - 10.0.32.0/20
         routes:
           - dest: 0.0.0.0/0
             gw: igw
+        resource_tags: { "Name":"rtb-private" }
     region: "{{ aws_region }}"
   register: vpc
 
