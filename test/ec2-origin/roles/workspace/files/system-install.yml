@@ -49,5 +49,6 @@
   sudo: yes
   tasks:
     - yum: name=squid state=present
+    - copy: src=squid.conf dest="/etc/squid/"
     - service: name=squid state=started enabled=yes
   

@@ -27,18 +27,13 @@
     - opencontrail.yml
     - opencontrail_provision.yml
     
-#
-# commenting out copy play used in original Juniper repo because we don't have this file for the demo
-#
-#- name: Copy registry certificate
-#  copy: src=registry.crt dest="{{ path_src }}/openshift-ansible/playbooks/byo"
-
 - name: Copy files
   copy: src="{{ item }}" dest="{{ path_src }}/openshift-ansible/playbooks/byo"
   with_items:
     - opencontrail_validate.py
     - deployment_config_set.py
     - rails-postgresql.patch.j2
+    - squid.conf
 
 - copy: src=ansible.cfg dest="{{ path_src }}/openshift-ansible"
 
