@@ -178,8 +178,9 @@ aws ec2  describe-instances --filters "Name=tag:Name,Values=origin-gateway-1" | 
 ```
 - Further, select the checkbox that says "Use the same proxy server for all protocols". Save. Finally, go to the Proxy SwitchySharp General tab and select the box "Quick Switch". Drag and drop into the "Cycled Profiles" the boxes saying Direct Connection and OpenShift. Save. Now you can close the chrome tab for the switcher extension. Just clicking the globe icon will switch between a direct connection (globe is grey) and a proxied connection (globe is blue).
 - When you're ready activate the proxy. This sends your Chrome web traffic to the gateway node on port 3128. There are squid.conf rules to allow traffic matching certain patterns and certain hosts. Squid will proxy any URL ending in ".cluster.local" or ".compute.internal" or anything destined to the origin-master node's private IP address. The master is running the OpenShift web console on port 8443. Give it a go. Using the private IP of your master node, type a URL into the browser like "https://10.0.32.25:8443" This should take you to the web console and you can now login. Similarly when we deploy the sample Rails app, you can go to its URL that OpenShift will assign ending in ".cluster.local".
-- Login to the OpenShift console using username test and password c0ntrail123 (that's a zero for the o). You should see a screen like this:
+- Login to the OpenShift console using username test and password c0ntrail123 (that's a zero for the o). You should see a screen like this:<br/><br/>
 ![alt text](https://github.com/jameskellynet/container-networking-ansible/blob/master/openshift-console.png "")
+<br/><br/>
 - If you click on test the test project you have setup to demo, you can start to build it. Click Browse > Builds. Then Start this application build.
 - TODO Embed a youtube demo video showing the OpenShift workflow to demo
 - TODO automate the inclusion of OpenContrail GUI and instructions to access it 
