@@ -1,13 +1,9 @@
 ---
-- name: Cleanup routes from the VPC routing table
-  ec2_vpc_rtb_update:
+- name: Gather all the VPC facts # using ec2_vpc_facts.py until switching to ec2_vpc_net_facts in ansible 2.1+ 
+  ec2_vpc_facts:
     region: "{{ aws_region }}"
-    vpc_id: "{{ ec2_vpc_id }}"
-    state: absent
-    subnets:
-      - "{{ ec2_private_subnet_id }}"
-    routes:
-      - dest: "{{ opencontrail_service_addresses }}"
+    resource_tags:
+      "Name": "{{ aws_vpc_name }}{{ cluster_job }}"
 
 - name: Instance id list
   set_fact:
@@ -15,7 +11,8 @@
 - set_fact:
     instance_ids: "{% set x = [] %}{% for host in hosts %}{% set _ = x.append(hostvars[host]['id']) %}{% endfor %}{{ x }}"
 
-- ec2_vol:
+- name: Get EC2 volumes list for cluster
+  ec2_vol:
     instance: "{{ item }}"
     state: list
     region: "{{ aws_region }}"
@@ -40,3 +37,10 @@
     state: absent
   with_items: volume_ids
   ignore_errors: true
+  
+- name: Delete the VPC and its dependencies
+  ec2_vpc_delete:
+    region: "{{ aws_region }}"
+    resource_tags:
+      "Name": "{{ aws_vpc_name }}{{ cluster_job }}"
+  

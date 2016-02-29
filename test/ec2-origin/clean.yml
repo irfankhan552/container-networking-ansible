@@ -1,6 +1,6 @@
 ---
 # Executed with the inventory created by the playbook.
-#   ansible-playbook -i cluster.status clean.yml
+#   ansible-playbook -i cluster.status<cluster_job> clean.yml
 #
 - hosts: localhost
   connection: local

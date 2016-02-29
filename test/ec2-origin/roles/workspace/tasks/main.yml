@@ -8,7 +8,7 @@
 - name: Openshift provisioning
   git: repo=https://github.com/pedro-r-marques/openshift-ansible dest="{{ path_src }}/openshift-ansible" version=opencontrail_3.0.44 update=no
 
-- copy: src=inventory.cluster dest="{{ path_src }}/openshift-ansible/inventory/byo/hosts"
+- copy: src="inventory.cluster{{ cluster_job }}" dest="{{ path_src }}/openshift-ansible/inventory/byo/hosts"
 
 - name: Copy deployment playbooks
   copy: src="{{ item }}" dest="{{ path_src }}/openshift-ansible/playbooks/byo"

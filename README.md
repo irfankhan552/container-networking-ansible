@@ -91,7 +91,8 @@ aws ec2 describe-instances
 ```
 wget http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 sudo rpm -ivh epel-release-latest-7.noarch.rpm
-sudo yum install -y ansible python-boto pyOpenSSL git
+sudo yum install -y ansible python-boto pyOpenSSL git python-pip
+sudo pip install --upgrade jinja2
 ansible --version
 ```
 - You can remove everything in you just created in your home directory now if you like.
@@ -111,20 +112,24 @@ aws_vpc_name: openshift-demo-vpc
 aws_keys: jamesk-keys
 ```
 
-- In your edits, setup your AWS region (in case it's different), desired AWS VPC name (will get created the first time we create the cluster), and the name of the AWS keys file (without the .pem extension ).  If you are using a different AWS region than us-west-2, the EC2 image variable here might change. Use the appropriate image ID for a CentOS 7 machine with kernel version matching 3.10:
+- In your edits, setup your AWS region (in case it's different), desired AWS VPC name (will get created the first time we create the cluster), and the name of the AWS keys file (without the .pem extension ). Also if you want to create several concurrent clusters, there's a cluster_job variable you can increment here or overwrite with -e in the ansible-playbook command line. If you are using a different AWS region than us-west-2, the EC2 image variable here might change. Use the appropriate image ID for a CentOS 7 machine with kernel version matching 3.10: 
 ```
 $ uname -r
 3.10.0-229.14.1.el7.x86_64
 ```
-
 - Finally let's kick off our Ansible playbook and get going. This sets up the VMs we will need in a cluster. A deployer and gateway node in a "public" subnet, and a master, node1 and node2 in the "private" subnet.
 ```
 cd container-networking-ansible/test/ec2-origin/
 ansible-playbook -i localhost playbook.yml --tags=cluster
 ```
-- That should have generated cluster.status, an Ansible inventory file. Check it out. Assuming it all worked, move on to setup the nodes in your new cluster.
+- That should have generated cluster.status1 (unless you changed the cluster_job variable in all.yml), an Ansible inventory file. Check it out.
+- If you ever want to tear down this cluster, then you can run
 ```
-ansible-playbook -i cluster.status playbook.yml --tags=deployer-install,workspace
+ansible-playbook -i cluster.status1 clean.yml
+```
+- Assuming it all worked, move on to setup the nodes in your new cluster. Run from the same directory as above. Before you run it, check in your EC2 console that all status check have completed.
+```
+ansible-playbook -i cluster.status1 playbook.yml --tags=deployer-install,workspace
 ```
 - Open your cluster.status file and grab the name of the newly created and setup deployer node (see it under [deployer]) and ssh to it. Also node the IP of the master node for the next command (see it under [masters].
 ```
