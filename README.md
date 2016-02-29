@@ -182,6 +182,7 @@ aws ec2  describe-instances --filters "Name=tag:Name,Values=origin-gateway-1" | 
 ![alt text](https://github.com/jameskellynet/container-networking-ansible/blob/master/openshift-console.png "")
 <br/><br/>
 - If you click on test the test project you have setup to demo, you can start to build it. Click Browse > Builds. Then Start this application build.
+- On the master node you can use the "oc help" command to explore openshift. "oc login" will allow you to login with the user test. If you logout and want to log back in as the system admin then do "oc login -u system:admin -n default"
 - TODO Embed a youtube demo video showing the OpenShift workflow to demo
 - TODO automate the inclusion of OpenContrail GUI and instructions to access it 
 

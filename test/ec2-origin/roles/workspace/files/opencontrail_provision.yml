@@ -38,7 +38,7 @@
       lineinfile:
         dest: /etc/sysconfig/origin-master
         regexp: '^(#|)HTTP_PROXY='
-        line: "HTTP_PROXY=http://web-proxy.VAR_AWS_REGION.ec2.internal:3128"
+        line: "HTTP_PROXY={{ opencontrail_http_proxy }}"
       notify:
         - restart openshift-master
 
@@ -46,7 +46,7 @@
       lineinfile:
         dest: /etc/sysconfig/origin-master
         regexp: '^(#|)HTTPS_PROXY='
-        line: "HTTPS_PROXY=http://web-proxy.VAR_AWS_REGION.ec2.internal:3128"
+        line: "HTTPS_PROXY={{ opencontrail_http_proxy }}"
       notify:
         - restart openshift-master
 
