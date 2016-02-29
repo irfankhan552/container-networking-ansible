@@ -30,9 +30,9 @@
   ec2_vpc_facts:
     region: "{{ aws_region }}"
     resource_tags: 
-      "Name": openshift-demo-vpc1
+      "Name": "{{ aws_vpc_name }}{{ cluster_job }}"
 
-#       "Name": "{{ aws_vpc_name }}{{ cluster_job }}"
+
 # get subnets so we can feed the IDs to the instances
 
 - set_fact:

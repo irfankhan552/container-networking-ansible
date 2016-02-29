@@ -43,3 +43,11 @@
 
   vars:
     web_proxy: "http://ip-10-0-13-207.us-west-2.compute.internal:3128"
+
+- name: Install/start proxy on gateway for external browser reachability 
+  hosts: gateways
+  sudo: yes
+  tasks:
+    - yum: name=squid state=present
+    - service: name=squid state=started enabled=yes
+  
