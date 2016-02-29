@@ -1,4 +1,4 @@
-# container-networking-ansible
+# Demo setup for OpenShift + OpenContrail on AWS
 Ansible provisioning for container networking solutions using OpenContrail
 
 This repository contains provisioning instructions to install OpenContrail
@@ -6,12 +6,13 @@ as a network overlay for container based cluster management solutions.
 
 Forked from https://github.com/Juniper/container-networking-ansible which was built for testing, this repo is my copy for setting a small cloud lab and demo environment. I have made the changes necessary to install OpenShift Origin with OpenContrail on EC2 and removed the Jenkins testing. As time allows I will update this readme with instructions to deploy this for yourself.
 
+<!---
 The opencontrail playbook consists of the following:
   - filter_plugins/ip_filters.py
   - roles/opencontrail{,_facts,_provision}
 
 The playbooks are designed to be addons to the existing ansible provisioning for kubernetes and openshift.
-<!---
+
 ### Kubernetes
 
 #### Network segmentation and access control
@@ -123,7 +124,7 @@ cd container-networking-ansible/test/ec2-origin/
 ansible-playbook -i localhost playbook.yml --tags=cluster
 ```
 - That should have generated cluster.status1 (unless you changed the cluster_job variable in all.yml), an Ansible inventory file. Check it out.
-- If you ever want to tear down this cluster, then you can run
+- Later if/when you want to tear down this cluster, then you can run this... and afterward remove the inventory.cluster1 and cluster.status1 files.
 ```
 ansible-playbook -i cluster.status1 clean.yml
 ```
@@ -131,16 +132,30 @@ ansible-playbook -i cluster.status1 clean.yml
 ```
 ansible-playbook -i cluster.status1 playbook.yml --tags=deployer-install,workspace
 ```
-- Open your cluster.status file and grab the name of the newly created and setup deployer node (see it under [deployer]) and ssh to it. Also node the IP of the master node for the next command (see it under [masters].
+- Before logging into the deployer node, config your ssh with ForwardAgent=Yes. This is needed to login and then proceed to the nodes int he private subnet, and it is needed by the deployer-automate option below.
 ```
-ssh <_something_>.compute.amazonaws.com -o ForwardAgent=yes
+vi ~/.ssh/config
+(edit the file)
+i
+ForwardAgent=Yes
+:wq
+(done editing the file)
+chmod 400 ~/.ssh/config
+```
+- Open your cluster.status1 file and grab the name of the newly created and setup deployer node (see it under [deployer]) and ssh to it. Also node the IP of the master node for the next command (see it under [masters].
+```
+ssh <_something_>.compute.amazonaws.com
 ```
 - You should now be on the deployer node. Test that from here, you can ssh into the master node in the other subnet using it's private IP.
 ```
 ssh 10.<_something_>
 ```
--  If you can get into the master node, you're good. Otherwise, TODO. Close the connect to the master node, so you're back on the deployer.
--  From the deployer, we're going to kick off a few playbooks manually that are performed by Jenkins in the automated Juniper tests that I removed. It's normal to see an error in the command below validating stage 2 (run it nevertheless), which is why there's a workaround playbook run after that. 
+-  If you can get into the master node, you're good. You'll want to access this later to run "oc" commands (the openshift CLI). Close the connect to the master node.
+- So you're back on the deployer node. You can optionally close the connection to the deployer node and run this from the starting-point node to automate the rest which is quite lengthy.
+```
+ansible-playbook -i cluster.status1 playbook.yml --tags=deployer-automate
+``` 
+-  _Alternatively_, from the deployer, kick off a few playbooks manually that are performed by Jenkins in the automated Juniper tests that I removed (why I added the step above). It's normal to see an error in the command below validating stage 2 (run it nevertheless), which is why there's a workaround playbook run after that. 
 ```
 cd src/openshift-ansible/
 ansible-playbook -i inventory/byo/hosts playbooks/byo/system-install.yml
@@ -156,7 +171,6 @@ ansible-playbook -i inventory/byo/hosts playbooks/byo/openshift_provision.yml
 python playbooks/byo/opencontrail_validate.py --stage 4 inventory/byo/hosts
 ansible-playbook -i inventory/byo/hosts playbooks/byo/applications.yml
 python playbooks/byo/opencontrail_validate.py --stage 5 inventory/byo/hosts
-
 ```
 
 

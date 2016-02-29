@@ -22,3 +22,12 @@
     - workspace
   tags:
     - workspace
+
+- hosts: deployer
+  gather_facts: False
+  
+  roles:
+    - deployer-automate
+  tags:
+    - deployer-automate
+    

@@ -1,0 +1,75 @@
+---
+- set_fact:
+   playbook_base: "{{ path_base }}/playbooks/byo"
+   playbook_inventory: "{{ path_base }}/inventory/byo/hosts"
+   validate_script: "{{ path_base }}/playbooks/byo/opencontrail_validate.py"
+
+# Step 0: setup basics
+
+- name: Run remote playbook system-install.yml
+  command: "ansible-playbook -i {{ playbook_inventory }} {{ playbook_base }}/system-install.yml"
+
+# Step 1: install OC
+
+- name: Run remote playbook opencontrail.yml (get coffee)
+  command: "ansible-playbook -i {{ playbook_inventory }} {{ playbook_base }}/opencontrail.yml"
+  
+- pause: seconds=5
+  
+- name: Validating step 1 - opencontrail installed
+  command: "python {{ validate_script }} --stage 1 {{ playbook_inventory }}"
+
+# Step 2: install OS
+
+- name: Run remote playbook config.yml
+  command: "ansible-playbook -i {{ playbook_inventory }} {{ playbook_base }}/config.yml"
+
+- pause: seconds=5
+  
+- name: Validating step 2 - OpenShift Installed (ignoring errors and using a workaround next if running this the first time)
+  command: python {{ validate_script }} --stage 2 {{ playbook_inventory }}
+  ignore_errors: True
+  register: command_result
+
+- name: Run remote playbook system_workaround.yml # deal with failure of last command
+  command: "ansible-playbook -i {{ playbook_inventory }} {{ playbook_base }}/systemd_workaround.yml"
+  when: "'failed' in command_result.stderr"
+
+- pause: seconds=5
+  when: "'failed' in command_result.stderr"
+
+- name: Validating step 2 workaround - OpenShift Installed
+  command: "python {{ validate_script }} --stage 2 {{ playbook_inventory }}"
+  when: "'failed' in command_result.stderr"
+  
+# Step 3: OpenContrail Provisioning
+
+- name: Run remote playbook opencontrail_provision.yml
+  command: "ansible-playbook -i {{ playbook_inventory }} {{ playbook_base }}/opencontrail_provision.yml"
+  
+- pause: seconds=5
+  
+- name: Validating step 3 - OpenContrail Provisioned
+  command: "python {{ validate_script }} --stage 3 {{ playbook_inventory }}"  
+   
+  
+# Step 4: OpenContrail Provisioning/Started
+
+- name: Run remote playbook openshift_provision.yml
+  command: "ansible-playbook -i {{ playbook_inventory }} {{ playbook_base }}/openshift_provision.yml"
+  
+- pause: seconds=5
+  
+- name: Validating step 4 - OpenShift Provisioned and started
+  command: "python {{ validate_script }} --stage 4 {{ playbook_inventory }}  "
+
+  
+# Step 5: Test application is deployed
+
+- name: Run remote playbook applications.yml
+  command: "ansible-playbook -i {{ playbook_inventory }} {{ playbook_base }}/applications.yml"
+  
+- pause: seconds=5
+  
+- name: Validating step 5 - App deployed
+  command: "python {{ validate_script }} --stage 5 {{ playbook_inventory }}"

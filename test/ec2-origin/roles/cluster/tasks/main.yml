@@ -206,5 +206,8 @@
 
 - name: Create inventory file
   template: src=inventory.j2 dest="{{ inventory_dir }}/inventory.cluster{{ cluster_job }}"
+  
+- name: Set the HTTP proxy
+  command: sed -i "s/VAR_PROXY/{{ origin_deployer.tagged_instances[0].private_dns_name }}/" "{{ inventory_dir }}/roles/workspace/files/system-install.yml"
 
 - wait_for: host="{{ origin_deployer.tagged_instances[0].public_dns_name }}" port=22

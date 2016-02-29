@@ -6,7 +6,7 @@
   file: path="{{ path_src }}" state=directory
 
 - name: Openshift provisioning
-  git: repo=https://github.com/pedro-r-marques/openshift-ansible dest="{{ path_src }}/openshift-ansible" version=opencontrail_3.0.44 update=no
+  git: repo=https://github.com/jameskellynet/openshift-ansible dest="{{ path_src }}/openshift-ansible" version=opencontrail_3.0.44 update=no
 
 - copy: src="inventory.cluster{{ cluster_job }}" dest="{{ path_src }}/openshift-ansible/inventory/byo/hosts"
 
@@ -26,7 +26,7 @@
     - system-install.yml
     - opencontrail.yml
     - opencontrail_provision.yml
-
+    
 #
 # commenting out copy play used in original Juniper repo because we don't have this file for the demo
 #

@@ -42,4 +42,4 @@
       with_items: groups['all']
 
   vars:
-    web_proxy: "http://web-proxy.VAR_AWS_REGION.ec2.internal:3128"
+    web_proxy: "http://ip-10-0-13-207.us-west-2.compute.internal:3128"

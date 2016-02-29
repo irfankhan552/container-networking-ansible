@@ -36,6 +36,9 @@
 
     - name: Switch back to default project
       command: oc project default
+      
+    - name: Make test an admin user
+      command: oc policy add-role-to-user admin test -n test
 
   vars:
     tmp_dir: /home/centos/test
