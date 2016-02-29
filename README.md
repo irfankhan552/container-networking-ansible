@@ -172,7 +172,16 @@ python playbooks/byo/opencontrail_validate.py --stage 4 inventory/byo/hosts
 ansible-playbook -i inventory/byo/hosts playbooks/byo/applications.yml
 python playbooks/byo/opencontrail_validate.py --stage 5 inventory/byo/hosts
 ```
-
-
+-  Whichever previous step you took, you are now ready to reach your OpenShift console over the web. You can use any kind of client side proxy you like. Here are instructions for the one that I used. First you'll need the Google Chrome browser installed. Open it and go to https://chrome.google.com/webstore/detail/proxy-switchysharp/dpplabbmogkhghncfbfdeeokoefdjegm. Install this Chrome Extension called Proxy SwitchySharp by clicking "+Add to Chrome" You should get a little globe in the top-right of the browser now and you can always click it to toggle on and off of your client-side proxy. If you right-click the globe icon and select options, you can configure it. Do that and create a new profile. In the HTTP port put 3128 (where Squid proxy is listening), and in the HTTP proxy field enter the public fully qualified domain name of your gateway node. You can retrieve that from the Public DNS field in the AWS EC2 web console or using the command below on your starting-point node. It will look like "ec2-52-33-14-187.us-west-2.compute.amazonaws.com".
+```
+aws ec2  describe-instances --filters "Name=tag:Name,Values=origin-gateway-1" | grep "PublicDnsName"
+```
+- Further, select the checkbox that says "Use the same proxy server for all protocols". Save. Finally, go to the Proxy SwitchySharp General tab and select the box "Quick Switch". Drag and drop into the "Cycled Profiles" the boxes saying Direct Connection and OpenShift. Save. Now you can close the chrome tab for the switcher extension. Just clicking the globe icon will switch between a direct connection (globe is grey) and a proxied connection (globe is blue).
+- When you're ready activate the proxy. This sends your Chrome web traffic to the gateway node on port 3128. There are squid.conf rules to allow traffic matching certain patterns and certain hosts. Squid will proxy any URL ending in ".cluster.local" or ".compute.internal" or anything destined to the origin-master node's private IP address. The master is running the OpenShift web console on port 8443. Give it a go. Using the private IP of your master node, type a URL into the browser like "https://10.0.32.25:8443" This should take you to the web console and you can now login. Similarly when we deploy the sample Rails app, you can go to its URL that OpenShift will assign ending in ".cluster.local".
+- Login to the OpenShift console using username test and password c0ntrail123 (that's a zero for the o). You should see a screen like this:
+![alt text](https://github.com/jameskellynet/container-networking-ansible/blob/master/openshift-console.png "")
+- If you click on test the test project you have setup to demo, you can start to build it. Click Browse > Builds. Then Start this application build.
+- TODO Embed a youtube demo video showing the OpenShift workflow to demo
+- TODO automate the inclusion of OpenContrail GUI and instructions to access it 
 
 
