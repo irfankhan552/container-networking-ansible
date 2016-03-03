@@ -43,4 +43,14 @@
     region: "{{ aws_region }}"
     resource_tags:
       "Name": "{{ aws_vpc_name }}{{ cluster_job }}"
-  
+      
+- name: Removing generated local cluster.status definition file
+  command: rm cluster.status{{ cluster_job }}
+    
+- name: Removing generated local inventory.cluster definition file
+  command: rm inventory.cluster{{ cluster_job }}
+    
+- name: Removing generated local squid.conf definition file
+  command: rm roles/workspace/files/squid.conf{{ cluster_job }}
+        
+        

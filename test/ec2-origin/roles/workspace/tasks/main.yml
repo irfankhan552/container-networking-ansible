@@ -27,15 +27,18 @@
     - opencontrail.yml
     - opencontrail_provision.yml
     
-- name: Copy files
+- name: Copy static files
   copy: src="{{ item }}" dest="{{ path_src }}/openshift-ansible/playbooks/byo"
   with_items:
     - opencontrail_validate.py
     - deployment_config_set.py
     - rails-postgresql.patch.j2
-    - squid.conf
 
-- copy: src=ansible.cfg dest="{{ path_src }}/openshift-ansible"
+- name: Copy generated squid proxy config file
+  copy: src="squid.conf{{ cluster_job }}" dest="{{ path_src }}/openshift-ansible/playbooks/byo/squid.conf"
+
+- name: Copying ansible config file
+  copy: src=ansible.cfg dest="{{ path_src }}/openshift-ansible"
 
 - name: Extract opencontrail roles
   unarchive: src=container-networking-ansible.tgz dest="{{ path_src }}/openshift-ansible"
