@@ -10,4 +10,4 @@ aws_keys: jamesk-keys
 # then change this to "2" and it will make a whole new cluster and vpc. In practice, we just  
 # append this to the VPC and instance names.
 #
-cluster_job: 2
+cluster_job: 1
