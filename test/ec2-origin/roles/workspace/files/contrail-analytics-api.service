@@ -1,0 +1,23 @@
+[Unit]
+Description=OpenContrail analytics api server
+
+After=cassandra.service zookeeper.service rabbitmq.service ifmap-server.service
+Requires=cassandra.service zookeeper.service rabbitmq.service ifmap-server.service
+
+[Service]
+ExecStartPre=/usr/bin/docker pull opencontrail/analytics:2.20
+ExecStartPre=-/usr/bin/docker rm -f contrail-analytics-api
+ExecStart=/usr/bin/docker run --name contrail-analytics-api --net=host -v /etc/contrail:/etc/contrail:z -v /var/log/contrail:/var/log/contrail:z  opencontrail/analytics:2.20 /usr/bin/contrail-analytics-api
+ExecStop=/usr/bin/docker stop -t 10 contrail-analytics-api
+Restart=on-failure
+# Processes that do not register an handler for SIGTERM will be killed by
+# the "docker stop" command after the timeout. The docker client that performs
+# the "run" operation will then exit with code 137. Defining status 137 as
+# successful prevents the systemd unit from entering "failed state".
+SuccessExitStatus=0 137
+TimeoutStartSec=0
+TimeoutStopSec=1m
+
+
+[Install]
+WantedBy=multi-user.target
