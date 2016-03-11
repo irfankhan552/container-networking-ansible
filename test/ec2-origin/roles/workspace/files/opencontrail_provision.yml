@@ -14,6 +14,8 @@
     os_firewall_allow:
       - service: contrail-api
         port: 8082/tcp
+      - service: contrail-web
+        port: 8143/tcp
       - service: xmpp
         port: 5269/tcp
 

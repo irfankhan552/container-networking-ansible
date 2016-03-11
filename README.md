@@ -132,7 +132,7 @@ ansible-playbook -i cluster.status1 clean.yml
 ```
 ansible-playbook -i cluster.status1 playbook.yml --tags=deployer-install,workspace
 ```
-- Before logging into the deployer node, config your ssh with ForwardAgent=Yes. This is needed to login and then proceed to the nodes int he private subnet, and it is needed by the deployer-automate option below.
+- Before logging into the deployer node, config your ssh with ForwardAgent=Yes. This is needed to login and then proceed to the nodes in the private subnet, and it is needed by the deployer-automate option below.
 ```
 vi ~/.ssh/config
 (edit the file)
@@ -142,20 +142,20 @@ ForwardAgent=Yes
 (done editing the file)
 chmod 400 ~/.ssh/config
 ```
-- Open your cluster.status1 file and grab the name of the newly created and setup deployer node (see it under [deployer]) and ssh to it. Also node the IP of the master node for the next command (see it under [masters].
+- Open your cluster.status1 file and grab the name of the newly created and setup deployer node (see it under [deployer]) and ssh to it. Also note the IP of the master node for the next command (see it under [masters]).
 ```
 ssh <_something_>.compute.amazonaws.com
 ```
-- You should now be on the deployer node. Test that from here, you can ssh into the master node in the other subnet using it's private IP.
+- You should now be on the deployer node. Test that from here, you can ssh into the master node in the other subnet using its private IP.
 ```
 ssh 10.<_something_>
 ```
--  If you can get into the master node, you're good. You'll want to access this later to run "oc" commands (the openshift CLI). Close the connect to the master node.
-- So you're back on the deployer node. You can optionally close the connection to the deployer node and run this from the starting-point node to automate the rest which is quite lengthy.
+- If you can get into the master node, you're good. You'll want to access this later to run "oc" commands (the openshift CLI). Close the connection to the master node.
+- Now you're back on the deployer node. You can optionally close the connection to the deployer node and run this from the starting-point node to automate the rest which is quite lengthy (option a).
 ```
 ansible-playbook -i cluster.status1 playbook.yml --tags=deployer-automate
 ``` 
--  _Alternatively_, from the deployer, kick off a few playbooks manually that are performed by Jenkins in the automated Juniper tests that I removed (why I added the step above). It's normal to see an error in the command below validating stage 2 (run it nevertheless), which is why there's a workaround playbook run after that. 
+-  _Alternatively_, (option b) from the deployer, kick off a few playbooks manually that are performed by Jenkins in the automated Juniper tests that I removed (why I added the step above). It's normal to see an error in the command below validating stage 2 (run it nevertheless), which is why there's a workaround playbook run after that. 
 ```
 cd src/openshift-ansible/
 ansible-playbook -i inventory/byo/hosts playbooks/byo/system-install.yml
@@ -172,12 +172,15 @@ python playbooks/byo/opencontrail_validate.py --stage 4 inventory/byo/hosts
 ansible-playbook -i inventory/byo/hosts playbooks/byo/applications.yml
 python playbooks/byo/opencontrail_validate.py --stage 5 inventory/byo/hosts
 ```
--  Whichever previous step you took, you are now ready to reach your OpenShift console over the web. You can use any kind of client side proxy you like. Here are instructions for the one that I used. First you'll need the Google Chrome browser installed. Open it and go to https://chrome.google.com/webstore/detail/proxy-switchysharp/dpplabbmogkhghncfbfdeeokoefdjegm. Install this Chrome Extension called Proxy SwitchySharp by clicking "+Add to Chrome" You should get a little globe in the top-right of the browser now and you can always click it to toggle on and off of your client-side proxy. If you right-click the globe icon and select options, you can configure it. Do that and create a new profile. In the HTTP port put 3128 (where Squid proxy is listening), and in the HTTP proxy field enter the public fully qualified domain name of your gateway node. You can retrieve that from the Public DNS field in the AWS EC2 web console or using the command below on your starting-point node. It will look like "ec2-52-33-14-187.us-west-2.compute.amazonaws.com".
+
+- If any step above should fail (for example sometimes there are connection issues), you can simply re-run the command.
+- Whichever previous option you took, you are now ready to reach your OpenShift console over the web. You can use any kind of client-side proxy that you like. Here are instructions for the one that I used. First you'll need the Google Chrome browser installed. Open it and go to https://chrome.google.com/webstore/detail/proxy-switchysharp/dpplabbmogkhghncfbfdeeokoefdjegm. Install this Chrome Extension called Proxy SwitchySharp by clicking "+Add to Chrome" You should get a little globe in the top-right of the browser now and you can always click it to toggle on and off of your client-side proxy. If you right-click the globe icon and select options, you can configure it. Do that and create a new profile. In the HTTP port put 3128 (where Squid proxy is listening), and in the HTTP proxy field enter the public fully qualified domain name of your gateway node. You can retrieve that from the Public DNS field in the AWS EC2 web console or using the command below on your starting-point node. It will look like "ec2-52-33-14-187.us-west-2.compute.amazonaws.com".
 ```
 aws ec2  describe-instances --filters "Name=tag:Name,Values=origin-gateway-1" | grep "PublicDnsName"
 ```
 - Further, select the checkbox that says "Use the same proxy server for all protocols". Save. Finally, go to the Proxy SwitchySharp General tab and select the box "Quick Switch". Drag and drop into the "Cycled Profiles" the boxes saying Direct Connection and OpenShift. Save. Now you can close the chrome tab for the switcher extension. Just clicking the globe icon will switch between a direct connection (globe is grey) and a proxied connection (globe is blue).
-- When you're ready activate the proxy. This sends your Chrome web traffic to the gateway node on port 3128. There are squid.conf rules to allow traffic matching certain patterns and certain hosts. Squid will proxy any URL ending in ".cluster.local" or ".compute.internal" or anything destined to the origin-master node's private IP address. The master is running the OpenShift web console on port 8443. Give it a go. Using the private IP of your master node, type a URL into the browser like "https://10.0.32.25:8443" This should take you to the web console and you can now login. Similarly when we deploy the sample Rails app, you can go to its URL that OpenShift will assign ending in ".cluster.local".
+
+- When you're ready, activate the proxy. This sends your Chrome web traffic to the gateway node on port 3128. There are squid.conf rules to allow traffic matching certain patterns and certain hosts. Squid will proxy any URL ending in ".cluster.local" or ".compute.internal" or anything destined to the origin-master node's private IP address. The master is running the OpenShift web console on port 8443. Give it a go. Using the private IP of your master node, type a URL into the browser like "https://10.0.32.25:8443" This should take you to the web console and you can now login. Similarly when we deploy the sample Rails app, you can go to its URL that OpenShift will assign ending in ".cluster.local".
 - Login to the OpenShift console using username test and password c0ntrail123 (that's a zero for the o). You should see a screen like this:<br/><br/>
 ![alt text](https://github.com/jameskellynet/container-networking-ansible/blob/master/openshift-console.png "")
 <br/><br/>
@@ -185,5 +188,4 @@ aws ec2  describe-instances --filters "Name=tag:Name,Values=origin-gateway-1" | 
 - On the master node you can use the "oc help" command to explore openshift. "oc login" will allow you to login with the user test. If you logout and want to log back in as the system admin then do "oc login -u system:admin -n default"
 - TODO Embed a youtube demo video showing the OpenShift workflow to demo
 - TODO automate the inclusion of OpenContrail GUI and instructions to access it 
-
 

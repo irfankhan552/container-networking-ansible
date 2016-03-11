@@ -49,17 +49,6 @@
         line: "no_proxy=.ec2.internal,.compute.internal,{{ registry_svc_address }}"
       notify:
         - restart docker
-#    - lineinfile:
-#        dest: /etc/sysconfig/docker
-#        regexp: "^(#|)ADD_REGISTRY="
-#        line: "ADD_REGISTRY=--add-registry registry.VAR_AWS_REGION.ec2.internal:5000"
-#      notify:
-#        - restart docker
-#
-#    - file: path=/etc/docker/certs.d/registry.VAR_AWS_REGION.ec2.internal:5000 state=directory
-#    - copy: src=registry.crt dest=/etc/docker/certs.d/registry.VAR_AWS_REGION.ec2.internal:5000/ca.crt
-#      notify:
-#        - restart docker
   handlers:
     - name: restart docker
       service: name=docker state=restarted
@@ -80,3 +69,39 @@
     opencontrail_cluster_type: openshift
   tags:
     - opencontrail
+
+- hosts:
+    - masters
+  sudo: yes
+  tasks:
+    - name: Copy system files
+      copy: src="{{ item }}" dest="/etc/systemd/system"
+      with_items:
+        - contrail-analytics-api.service
+        - contrail-collector.service
+        - contrail-web.service
+
+    - name: Copy contrail web config files
+      copy: src="{{ item }}" dest="/etc/contrail"
+      with_items:
+        - config.global.js
+        - default.config.global.js
+
+    - name: install epel 7 dependency for redis
+      yum: name="http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm" state=present
+    
+    - name: install
+      yum: name=redis state=present
+
+    - name: Start redis
+      service: name=redis state=started enabled=yes
+    - name: Start contrail-collector
+      service: name=contrail-collector state=started enabled=yes
+    - name: Start contrail-collector
+      service: name=contrail-collector state=started enabled=yes
+    - name: Start contrail-web
+      service: name=contrail-web state=started enabled=yes
+
+  tags:
+    - opencontrail
+    - opencontrail-web

@@ -39,6 +39,12 @@
       
     - name: Make test an admin user
       command: oc policy add-role-to-user admin test -n test
+      
+    - name: Copy optional sample apps and k8 dashboard
+      copy: src="{{ item }}" dest="{{ tmp_dir }}"
+      with_items:
+        - k8-dashboard.yml
+        - guestbook-all-in-one.yml
 
   vars:
     tmp_dir: /home/centos/test

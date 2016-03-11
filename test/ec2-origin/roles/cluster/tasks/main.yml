@@ -208,6 +208,6 @@
   template: src=inventory.j2 dest="{{ inventory_dir }}/inventory.cluster{{ cluster_job }}"
   
 - name: Create squid.conf file to ship to gateway node
-  template: src=squid.conf.j2 dest="{{ inventory_dir }}/roles/workspace/files/squid.conf"
+  template: src=squid.conf.j2 dest="{{ inventory_dir }}/roles/workspace/files/squid.conf{{ cluster_job }}"
   
 - wait_for: host="{{ origin_deployer.tagged_instances[0].public_dns_name }}" port=22

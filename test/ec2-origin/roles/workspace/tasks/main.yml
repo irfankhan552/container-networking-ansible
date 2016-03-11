@@ -6,7 +6,9 @@
   file: path="{{ path_src }}" state=directory
 
 - name: Openshift provisioning
-  git: repo=https://github.com/jameskellynet/openshift-ansible dest="{{ path_src }}/openshift-ansible" version=opencontrail_3.0.44 update=no
+  git: repo=https://github.com/pedro-r-marques/openshift-ansible dest="{{ path_src }}/openshift-ansible" version=opencontrail_3.0.44 update=no
+#  re-check this is a steady baseline of https://github.com/pedro-r-marques/openshift-ansible
+#  git: repo=https://github.com/jameskellynet/openshift-ansible dest="{{ path_src }}/openshift-ansible" update=no
 
 - copy: src="inventory.cluster{{ cluster_job }}" dest="{{ path_src }}/openshift-ansible/inventory/byo/hosts"
 
@@ -33,6 +35,13 @@
     - opencontrail_validate.py
     - deployment_config_set.py
     - rails-postgresql.patch.j2
+    - contrail-analytics-api.service
+    - contrail-collector.service
+    - contrail-web.service
+    - config.global.js
+    - default.config.global.js
+    - guestbook-all-in-one.yml
+    - k8-dashboard.yml
 
 - name: Copy generated squid proxy config file
   copy: src="squid.conf{{ cluster_job }}" dest="{{ path_src }}/openshift-ansible/playbooks/byo/squid.conf"
