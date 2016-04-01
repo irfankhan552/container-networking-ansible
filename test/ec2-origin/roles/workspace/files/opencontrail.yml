@@ -97,8 +97,8 @@
       service: name=redis state=started enabled=yes
     - name: Start contrail-collector
       service: name=contrail-collector state=started enabled=yes
-    - name: Start contrail-collector
-      service: name=contrail-collector state=started enabled=yes
+    - name: Start contrail-analytics-api
+      service: name=contrail-analytics-api state=started enabled=yes
     - name: Start contrail-web
       service: name=contrail-web state=started enabled=yes
 
