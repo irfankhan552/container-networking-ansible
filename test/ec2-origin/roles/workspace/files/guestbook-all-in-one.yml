@@ -161,7 +161,7 @@ spec:
         app: guestbook
         tier: frontend
         "opencontrail.org/name" : "frontend"
-        "opencontrail.org/service" : "service-redis"
+        "opencontrail.org/services" : "service-redis"
     spec:
       containers:
       - name: php-redis
