@@ -28,8 +28,8 @@ acl CONNECT method CONNECT
 # Create ACL exceptions to forward external traffic destined to
 # sample apps and OpenShift portal to the master node
 #
-acl http_dst dstdom_regex \.cluster.local$
-acl http_master dstdom_regex \.{{ aws_region }}.compute.internal$
+acl http_dst dstdom_regex \.cluster\.local$
+acl http_master dstdom_regex \.{{ aws_region }}\.compute\.internal$
 acl http_master_ip dst {{ origin_master.tagged_instances[0].private_ip }}/32
 http_access allow http_master
 http_access allow http_master_ip
