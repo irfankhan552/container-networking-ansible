@@ -123,6 +123,7 @@ $ uname -r
 cd container-networking-ansible/test/ec2-origin/
 ansible-playbook -i localhost playbook.yml --tags=cluster
 ```
+- If you observe any error, it is likely at the end of the playbook (the task called "cluster | wait_for host" that waits 5 mins for the VMs to start). If that fails, it is just because AWS is, on rare occasion, slow to start up and initialize the VMs. Wait until all VMs are started and initialized successfully before proceeding (you can check with the EC2 cli or web console).
 - That should have generated cluster.status1 (unless you changed the cluster_job variable in all.yml), an Ansible inventory file. Check it out.
 - Later if/when you want to tear down this cluster, then you can run this... and afterward remove the inventory.cluster1 and cluster.status1 files.
 ```
