@@ -1,14 +1,16 @@
 --- /usr/share/openshift/examples/quickstart-templates/rails-postgresql.json	2016-01-04 23:35:22.893340775 +0000
 +++ rails-postgresql.json	2016-01-08 19:04:41.531340775 +0000
-@@ -18,6 +18,7 @@
+@@ -18,6 +18,9 @@
        "apiVersion": "v1",
        "metadata": {
          "name": "rails-postgresql-example",
-+        "opencontrail.org/name": "web-frontend-vn",
++        "labels": {
++          "opencontrail.org/name": "web-frontend-vn"
++        },
          "annotations": {
            "description": "Exposes and load balances the application pods"
          }
-@@ -73,7 +74,9 @@
+@@ -73,7 +76,9 @@
            "type": "Git",
            "git": {
              "uri": "${SOURCE_REPOSITORY_URL}",
@@ -19,7 +21,7 @@
            },
            "contextDir": "${CONTEXT_DIR}"
          },
-@@ -84,7 +87,17 @@
+@@ -84,7 +89,17 @@
                "kind": "ImageStreamTag",
                "namespace": "openshift",
                "name": "ruby:2.2"
@@ -38,7 +40,41 @@
            }
          },
          "output": {
-@@ -159,7 +172,9 @@
+@@ -106,7 +121,12 @@
+               "secret": "${GITHUB_WEBHOOK_SECRET}"
+             }
+           }
+-        ]
++        ],
++        "resources": {
++          "limits": {
++            "memory": "1Gi"
++          }
++        }
+       }
+     },
+     {
+@@ -120,18 +140,7 @@
+       },
+       "spec": {
+         "strategy": {
+-          "type": "Recreate",
+-          "recreateParams": {
+-          "pre": {
+-              "failurePolicy": "Abort",
+-              "execNewPod": {
+-                "command": [
+-                  "./migrate-database.sh"
+-                ],
+-                "containerName": "rails-postgresql-example"
+-              }
+-            }
+-          }
++          "type": "Recreate"
+         },
+         "triggers": [
+           {
+@@ -159,7 +168,9 @@
            "metadata": {
              "name": "rails-postgresql-example",
              "labels": {
@@ -49,15 +85,17 @@
              }
            },
            "spec": {
-@@ -233,6 +248,7 @@
+@@ -233,6 +244,9 @@
        "apiVersion": "v1",
        "metadata": {
          "name": "${DATABASE_SERVICE_NAME}",
-+        "opencontrail.org/name": "db-backend-vn",
++        "labels": {
++          "opencontrail.org/name": "db-backend-vn"
++        },
          "annotations": {
            "description": "Exposes the database server"
          }
-@@ -290,7 +306,8 @@
+@@ -290,7 +304,8 @@
            "metadata": {
              "name": "${DATABASE_SERVICE_NAME}",
              "labels": {
