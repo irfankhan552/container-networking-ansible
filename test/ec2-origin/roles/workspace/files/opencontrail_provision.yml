@@ -90,3 +90,9 @@
     - opencontrail_provision
   vars:
     opencontrail_cluster_type: openshift
+    
+- hosts: gateways
+  sudo: yes
+  tasks:
+    - name: Restart squid on gateway (workaround)
+      service: name=squid state=restarted enabled=yes

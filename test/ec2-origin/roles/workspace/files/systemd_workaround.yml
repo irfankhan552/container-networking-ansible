@@ -12,6 +12,9 @@
         - contrail-schema
         - contrail-control
         - ifmap-server
+        - contrail-collector
+        - contrail-analytics-api
+        - contrail-web
 
 - hosts:
     - nodes
