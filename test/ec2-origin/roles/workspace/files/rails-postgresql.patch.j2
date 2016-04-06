@@ -54,27 +54,16 @@
        }
      },
      {
-@@ -120,18 +140,7 @@
-       },
-       "spec": {
-         "strategy": {
--          "type": "Recreate",
--          "recreateParams": {
--          "pre": {
+@@ -123,7 +143,7 @@
+           "type": "Recreate",
+           "recreateParams": {
+           "pre": {
 -              "failurePolicy": "Abort",
--              "execNewPod": {
--                "command": [
--                  "./migrate-database.sh"
--                ],
--                "containerName": "rails-postgresql-example"
--              }
--            }
--          }
-+          "type": "Recreate"
-         },
-         "triggers": [
-           {
-@@ -159,7 +168,9 @@
++              "failurePolicy": "Ignore",
+               "execNewPod": {
+                 "command": [
+                   "./migrate-database.sh"
+@@ -159,7 +179,9 @@
            "metadata": {
              "name": "rails-postgresql-example",
              "labels": {
@@ -85,7 +74,7 @@
              }
            },
            "spec": {
-@@ -233,6 +244,9 @@
+@@ -233,6 +255,9 @@
        "apiVersion": "v1",
        "metadata": {
          "name": "${DATABASE_SERVICE_NAME}",
@@ -95,7 +84,7 @@
          "annotations": {
            "description": "Exposes the database server"
          }
-@@ -290,7 +304,8 @@
+@@ -290,7 +315,8 @@
            "metadata": {
              "name": "${DATABASE_SERVICE_NAME}",
              "labels": {
