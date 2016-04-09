@@ -188,6 +188,7 @@ aws ec2  describe-instances --filters "Name=tag:Name,Values=origin-gateway-1" | 
 - If you click on test the test project you have setup to demo, you can start to build it. Click Browse > Builds. Then Start this application build.
 - On the master node you can use the "oc help" command to explore openshift. "oc login" will allow you to login with the user test. If you logout and want to log back in as the system admin then do "oc login -u system:admin -n default"
 - I've now included the OpenContrail GUI. It depends on the analytics collectors and api. Those and the web component are running on the master node. Ideally these would instead run inside of a Kubernetes pod, and I'll change that when the work is done and tested upstream in OpenContrail. For now, if you want to access the GUI, then follow the proxy instructions as above for the OpenShift GUI. Using the private IP of your master node, type a URL into the browser like "https://10.0.32.25:8143". Note the different port of 8143. This should take you to the OpenContrail web console and you can now login using username "admin" and password "contrail123". You'll notice that the only the networking and policy functionality is useful. That is because the vRouters and other components are not "hooked up" to the analytics collector (in other words this is the quick and dirty demo edition of getting the GUI working, not the ideal model).
-- TODO Embed a youtube demo video showing the OpenShift workflow to demo
+- Demo video: https://www.youtube.com/watch?v=iMo54WUg6Kk <br/><br/>
+[![Alt text](http://img.youtube.com/vi/iMo54WUg6Kk/0.jpg)](https://www.youtube.com/watch?v=iMo54WUg6Kk)
 
 
