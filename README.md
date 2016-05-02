@@ -152,7 +152,7 @@ ssh <_something_>.compute.amazonaws.com
 ssh 10.<_something_>
 ```
 - If you can get into the master node, you're good. You'll want to access this later to run "oc" commands (the openshift CLI). Close the connection to the master node.
-- Now you're back on the deployer node. You can optionally close the connection to the deployer node and run this from the starting-point node to automate the rest which is quite lengthy (option a).
+- Now you're back on the deployer node. You can optionally close the connection to the deployer node and run this from the starting-point node to automate the rest which is quite lengthy (option a) - I no longer recommend this option a, because I've hit weird issues where I needed to rerun one of the commands that make up this uber job.
 ```
 ansible-playbook -i cluster.status1 playbook.yml --tags=deployer-automate
 ``` 
